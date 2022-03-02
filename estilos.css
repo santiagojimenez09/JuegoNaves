@@ -1,0 +1,28 @@
+.tablero{
+    display: flex;
+    flex-wrap: wrap;
+    border: 3px solid red;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+h1,h3{
+    text-align: center;
+}
+.tablero div{
+    width: 20px;
+    height: 20px;
+}
+.balas{
+    background-color: yellow;
+}
+.aliens{
+    background-color: blueviolet;
+    border-radius: 10px;
+}
+.nave{
+    background-color: blue;
+}
+.explocion{
+    background-color: red;
+}
