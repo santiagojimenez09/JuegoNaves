@@ -16,8 +16,49 @@ document.addEventListener("DOMContentLoaded",()=>{
         33,34,35,36,37,38,39,40,41,42
     ];
 
-    //Colocar los aliens en el tablero
-    aliens.forEach(alien => cuadrosTablero[posicionAliens + alien].classList.add("aliens"));
+    //Funcion para colocar los aliens en el tablero
+    //Forma con for
+    /*for(let i = 0; i <aliens.length; i++){
+        cuadrosTablero[aliens[i]].classList.add("aliens")
+    }*/
+    //Forma con forEach
+    function ubicarAliens(){
+        aliens.forEach(alien => cuadrosTablero[posicionAliens + alien].classList.add("aliens"));
+        }
+    ubicarAliens();
+
+    //Funcion para quitar los aliens en el tablero
+    function quitarAliens(){
+        aliens.forEach(alien => cuadrosTablero[posicionAliens + alien].classList.remove("aliens"));
+    }
+
     //Colocar la nave en posicion inicial
     cuadrosTablero[posicionNave].classList.add("nave");
+
+    //Funcion para mover la nave
+    function moverNave(e){
+        //quitar la nave en el tablero
+        cuadrosTablero[posicionNave].classList.remove("nave");
+        //mover la nave dependiendo de la tecla que oprima
+        switch(e.key){
+            case 'ArrowLeft':
+                if((posicionNave % cuadros) !== 0){
+                    posicionNave -=1;
+                }
+            break;
+            case 'ArrowRight':
+                if((posicionNave % cuadros) < cuadros -1){
+                    posicionNave +=1;
+                }
+            break;
+           
+        }
+        cuadrosTablero[posicionNave].classList.add("nave");
+    
+    }
+    //activar el evento del teclado
+    document.addEventListener('keydown',moverNave);
+    
+
+
 });
