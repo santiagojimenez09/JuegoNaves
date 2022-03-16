@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     let posicionNave = 202;
     let posicionAliens= 0;
     let aliensMuertos = [];
+    let iraDerecha = true;
     let resultado = 0;
     let direccion = 1;
     let alienID;
@@ -18,14 +19,17 @@ document.addEventListener("DOMContentLoaded",()=>{
 
     //Funcion para colocar los aliens en el tablero
     //Forma con for
-    /*for(let i = 0; i <aliens.length; i++){
-        cuadrosTablero[aliens[i]].classList.add("aliens")
-    }*/
-    //Forma con forEach
     function ubicarAliens(){
-        aliens.forEach(alien => cuadrosTablero[posicionAliens + alien].classList.add("aliens"));
+    for(let i = 0; i <aliens.length; i++){
+        if(!aliensMuertos.includes(i)){
+            cuadrosTablero[aliens[i]].classList.add("aliens");
         }
-    ubicarAliens();
+    }
+    //Forma con forEach
+    /*function ubicarAliens(){
+        aliens.forEach(alien => cuadrosTablero[posicionAliens + alien].classList.add("aliens"));
+        }*/
+    }ubicarAliens();
 
     //Funcion para quitar los aliens en el tablero
     function quitarAliens(){
@@ -58,6 +62,83 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
     //activar el evento del teclado
     document.addEventListener('keydown',moverNave);
+
+    //mover los aliens
+    function moverAliens(){
+        //limite de los aliens
+        const limiteIzquierdo = (aliens[0] % cuadros) === 0;
+        const limiteDerecho = (aliens[aliens.length -1] % cuadros) === cuadros-1;
+        quitarAliens();
+        //mover cuadros a la derecha
+        if(limiteDerecho && iraDerecha){
+            for(let i=0; i<aliens.length; i++){
+                aliens[i] += cuadros +1;
+                direccion = -1;
+                iraDerecha = false;
+            }
+        }
+        //mover cuadros a la izquierda
+        if(limiteIzquierdo && !iraDerecha){
+            for (let i= 0; i<aliens.length; i++) {
+                aliens[i] += cuadros -1;
+                direccion = 1;
+                iraDerecha = true;
+                
+            }
+        }
+        
+        for(let i=0; i<aliens.length; i++){
+            aliens[i] += direccion;
+
+        }
+        ubicarAliens();
+        
+        //juego terminado
+        if(cuadrosTablero[posicionNave].classList.contains("aliens")){
+            alert("PERDISTE");
+            location.reload();
+        }
+    
+    
+    }
+    moverAliens();
+    alienID = setInterval(moverAliens, 500);
+
+    function disparar(e){
+        let balaID;
+        let posicionBala = posicionNave;
+        //mover la bala
+        function moverBala(){
+            cuadrosTablero[posicionBala].classList.remove("balas");
+            posicionBala -= cuadros;
+            cuadrosTablero[posicionBala].classList.add("balas");
+            //matar aliens
+            if(cuadrosTablero[posicionBala].classList.contains("aliens")){
+                cuadrosTablero[posicionAliens].classList.remove("aliens");
+                cuadrosTablero[posicionBala].classList.remove("balas");
+                cuadrosTablero[posicionBala].classList.add("explosion");
+                //tiempo de explosion
+                setTimeout(()=>cuadrosTablero[posicionBala].classList.remove("explosion"),300);
+                clearInterval(balaID);
+                //buscar la posicion del alien eliminado y guardarlo en el array aliensMuertos
+                const aliensEliminados = aliens.indexOf(posicionBala);
+                aliensMuertos.push(aliensEliminados);
+                resultado++;
+                resultadoAliens.innerHTML = aliensMuertos.length;
+            }
+
+        }
+        switch(e.key){
+            case "ArrowUp" :
+                balaID = setInterval(moverBala, 100);
+                
+            break;
+        }
+
+    }
+    
+    document.addEventListener("keydown", disparar);
+
     
 
 
